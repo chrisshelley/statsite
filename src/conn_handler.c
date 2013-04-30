@@ -83,25 +83,26 @@ static int stream_formatter(FILE *pipe, void *data, metric_type type, char *name
     int i;
     switch (type) {
         case KEY_VAL:
-            STREAM("kv.%s|%f|%lld\n", name, *(double*)value);
+            STREAM("%s/kv|%f|%lld\n", name, *(double*)value);
             break;
 
         case COUNTER:
-            STREAM("counts.%s|%f|%lld\n", name, counter_sum(value));
+            STREAM("%s/counter|%f|%lld\n", name, counter_sum(value));
             break;
 
         case SET:
-            STREAM("sets.%s|%lld|%lld\n", name, set_size(value));
+            STREAM("%s/set|%lld|%lld\n", name, set_size(value));
             break;
 
         case TIMER:
             t = (timer_hist*)value;
-            STREAM("timers.%s.sum|%f|%lld\n", name, timer_sum(&t->tm));
+            STREAM("%s/timer/sum|%f|%lld\n", name, timer_sum(&t->tm));
+            STREAM("%s/timer/mean|%f|%lld\n", name, timer_mean(&t->tm));
+            STREAM("%s/timer/lower|%f|%lld\n", name, timer_min(&t->tm));
+            STREAM("%s/timer/upper|%f|%lld\n", name, timer_max(&t->tm));
+            STREAM("%s/timer/count|%lld|%lld\n", name, timer_count(&t->tm));
+            /* Removed by cshelley since these aren't going to be used
             STREAM("timers.%s.sum_sq|%f|%lld\n", name, timer_squared_sum(&t->tm));
-            STREAM("timers.%s.mean|%f|%lld\n", name, timer_mean(&t->tm));
-            STREAM("timers.%s.lower|%f|%lld\n", name, timer_min(&t->tm));
-            STREAM("timers.%s.upper|%f|%lld\n", name, timer_max(&t->tm));
-            STREAM("timers.%s.count|%lld|%lld\n", name, timer_count(&t->tm));
             STREAM("timers.%s.stdev|%f|%lld\n", name, timer_stddev(&t->tm));
             STREAM("timers.%s.median|%f|%lld\n", name, timer_query(&t->tm, 0.5));
             STREAM("timers.%s.p95|%f|%lld\n", name, timer_query(&t->tm, 0.95));
@@ -114,7 +115,7 @@ static int stream_formatter(FILE *pipe, void *data, metric_type type, char *name
                     STREAM("timers.%s.histogram.bin_%0.2f|%u|%lld\n", name, t->conf->min_val+(t->conf->bin_width*i), t->counts[i+1]);
                 }
                 STREAM("timers.%s.histogram.bin_>%0.2f|%u|%lld\n", name, t->conf->max_val, t->counts[i+1]);
-            }
+            } */
             break;
 
         default:
