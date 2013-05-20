@@ -96,19 +96,11 @@ static int stream_formatter(FILE *pipe, void *data, metric_type type, char *name
 
         case TIMER:
             t = (timer_hist*)value;
-<<<<<<< HEAD
-            STREAM("%s/timer/sum|%f|%lld\n", name, timer_sum(&t->tm));
-            STREAM("%s/timer/mean|%f|%lld\n", name, timer_mean(&t->tm));
-            STREAM("%s/timer/lower|%f|%lld\n", name, timer_min(&t->tm));
-            STREAM("%s/timer/upper|%f|%lld\n", name, timer_max(&t->tm));
-            STREAM("%s/timer/count|%lld|%lld\n", name, timer_count(&t->tm));
-=======
             STREAM("%s/timer/time/mean|%f|%lld\n", name, timer_mean(&t->tm));
             STREAM("%s/timer/time/lower|%f|%lld\n", name, timer_min(&t->tm));
             STREAM("%s/timer/time/upper|%f|%lld\n", name, timer_max(&t->tm));
             STREAM("%s/timer/value/count|%lld|%lld\n", name, timer_count(&t->tm));
             STREAM("%s/timer/value/sum|%f|%lld\n", name, timer_sum(&t->tm));
->>>>>>> 04a0bd594ec6ddca2fbb2d07211c4240785b418d
             /* Removed by cshelley since these aren't going to be used
             STREAM("timers.%s.sum_sq|%f|%lld\n", name, timer_squared_sum(&t->tm));
             STREAM("timers.%s.stdev|%f|%lld\n", name, timer_stddev(&t->tm));
