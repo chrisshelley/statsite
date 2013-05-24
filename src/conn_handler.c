@@ -83,11 +83,11 @@ static int stream_formatter(FILE *pipe, void *data, metric_type type, char *name
     int i;
     switch (type) {
         case KEY_VAL:
-            STREAM("%s/kv|%f|%lld\n", name, *(double*)value);
+            STREAM("%s|%f|%lld\n", name, *(double*)value);
             break;
 
         case COUNTER:
-            STREAM("%s/counter|%f|%lld\n", name, counter_sum(value));
+            STREAM("%s|%f|%lld\n", name, counter_sum(value));
             break;
 
         case SET:
@@ -96,26 +96,11 @@ static int stream_formatter(FILE *pipe, void *data, metric_type type, char *name
 
         case TIMER:
             t = (timer_hist*)value;
-            STREAM("%s/timer/time/mean|%f|%lld\n", name, timer_mean(&t->tm));
-            STREAM("%s/timer/time/lower|%f|%lld\n", name, timer_min(&t->tm));
-            STREAM("%s/timer/time/upper|%f|%lld\n", name, timer_max(&t->tm));
-            STREAM("%s/timer/value/count|%lld|%lld\n", name, timer_count(&t->tm));
-            STREAM("%s/timer/value/sum|%f|%lld\n", name, timer_sum(&t->tm));
-            /* Removed by cshelley since these aren't going to be used
-            STREAM("timers.%s.sum_sq|%f|%lld\n", name, timer_squared_sum(&t->tm));
-            STREAM("timers.%s.stdev|%f|%lld\n", name, timer_stddev(&t->tm));
-            STREAM("timers.%s.median|%f|%lld\n", name, timer_query(&t->tm, 0.5));
-            STREAM("timers.%s.p95|%f|%lld\n", name, timer_query(&t->tm, 0.95));
-            STREAM("timers.%s.p99|%f|%lld\n", name, timer_query(&t->tm, 0.99));
-
-            // Stream the histogram values
-            if (t->conf) {
-                STREAM("timers.%s.histogram.bin_<%0.2f|%u|%lld\n", name, t->conf->min_val, t->counts[0]);
-                for (i=0; i < t->conf->num_bins-2; i++) {
-                    STREAM("timers.%s.histogram.bin_%0.2f|%u|%lld\n", name, t->conf->min_val+(t->conf->bin_width*i), t->counts[i+1]);
-                }
-                STREAM("timers.%s.histogram.bin_>%0.2f|%u|%lld\n", name, t->conf->max_val, t->counts[i+1]);
-            } */
+            STREAM("%s/time/mean|%f|%lld\n", name, timer_mean(&t->tm));
+            STREAM("%s/time/lower|%f|%lld\n", name, timer_min(&t->tm));
+            STREAM("%s/time/upper|%f|%lld\n", name, timer_max(&t->tm));
+            STREAM("%s/value/count|%lld|%lld\n", name, timer_count(&t->tm));
+            STREAM("%s/value/sum|%f|%lld\n", name, timer_sum(&t->tm));
             break;
 
         default:
